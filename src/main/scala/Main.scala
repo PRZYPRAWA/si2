@@ -1,6 +1,6 @@
 import Einstein.values.Property
 import Einstein.{EinsteinProblem, HouseProp, LeastConstrainingValue => EinsteinLCS}
-import csp.{Backtracking, ForwardChecking, SelectValue, SelectVariable}
+import csp.{ArcConsistency, Backtracking, Csp, ForwardChecking, SelectValue, SelectVariable}
 import file.SaveToFile
 import map.{LeastConstrainingValue => MapLCS}
 import map.Node.Node
@@ -14,11 +14,6 @@ object Main extends App {
   println(s"Found ${einsteinSolution1.size} solutions")
   println(einsteinSolution1.headOption)
 
-  val einsteinSolution12 = Backtracking.solver(SelectVariable.smallestDomain[HouseProp, Property[String]],
-    SelectValue.default).solve(einstein)
-  println(s"Found ${einsteinSolution12.size} solutions")
-  println(einsteinSolution12.headOption)
-
   val einsteinSolution2 = ForwardChecking.solver(
     Einstein.EinsteinChangeDomain.change,
     SelectVariable.default[HouseProp, Property[String]],
@@ -26,12 +21,15 @@ object Main extends App {
   println(s"Found ${einsteinSolution2.size} solutions")
   println(einsteinSolution2.headOption)
 
-  val einsteinSolution22 = ForwardChecking.solver(
-    Einstein.EinsteinChangeDomain.change,
-    SelectVariable.smallestDomain[HouseProp, Property[String]],
-    SelectValue.default).solve(einstein)
-  println(s"Found ${einsteinSolution22.size} solutions")
-  println(einsteinSolution22.headOption)
+  val arcProblem: Csp[HouseProp, Property[String]] = Csp(EinsteinProblem.variables, v => EinsteinProblem.arcs(v))
+  val arcResult = ArcConsistency.makeArcConsistent(arcProblem)
+  //  arcResult.variables.map(v => (v.number, v.domain.map(_.value).mkString("[", ", ", "]"))).foreach(println)
+
+  val result = Backtracking.solver(SelectVariable.default[HouseProp, Property[String]],
+    EinsteinLCS.dsl).solve(arcResult.copy(constraints = v => EinsteinProblem.constraints(v)))
+
+  println(s"Found ${result.size} solutions")
+  println(result.headOption)
 
   println("-" * 50)
 

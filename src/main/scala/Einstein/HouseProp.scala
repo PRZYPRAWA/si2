@@ -17,4 +17,8 @@ case class HouseProp(
   override def removeFromDomain(value: Property[String]): HouseProp = {
     HouseProp(number, domain.filterNot(d => d.value == value.value), propType, this.value)
   }
+
+  override def withDomain(otherDomain: List[Property[String]]): Variable[Property[String]] =
+    HouseProp(number, otherDomain, propType, value)
+
 }
