@@ -1,17 +1,20 @@
 package csp
 
 object ForwardChecking {
-  def solver[V <: Variable[T], T](implicit changeDomain: ChangeDomain[V, T]): Solver[V, T] = new Solver[V, T] {
+  def solver[V <: Variable[T], T](implicit changeDomain: ChangeDomain[V, T],
+                                  selectVariable: SelectVariable[V, T],
+                                  selectValue: SelectValue[V, T]): Solver[V, T] = new Solver[V, T] {
     override def solve(problem: Csp[V, T]): List[Csp[V, T]] = {
       if (problem.isInvalid) {
         List.empty[Csp[V, T]]
       } else {
-        val variable = problem.variables.find(v => v.value.isEmpty)
+        val variable = selectVariable.select(problem.variables)
         variable match {
           case None =>
             List(problem)
           case Some(v) =>
-            v.domain.to(LazyList).foldLeft(List.empty[Csp[V, T]]) { (acc, value) =>
+            selectValue.select(v, problem.variables).to(LazyList).foldLeft(List.empty[Csp[V, T]]) { (acc, value) =>
+              //              v.domain.to(LazyList).foldLeft(List.empty[Csp[V, T]]) { (acc, value) =>
               val changedValue = v.copy(value)
               val changedProblem: Csp[V, T] = Csp(
                 changeDomain.change(
