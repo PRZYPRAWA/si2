@@ -1,9 +1,8 @@
 import Einstein.values.Property
 import Einstein.{EinsteinProblem, HouseProp, LeastConstrainingValue => EinsteinLCS}
-import csp.{ArcConsistency, Backtracking, Csp, ForwardChecking, SelectValue, SelectVariable}
-import file.SaveToFile
-import map.{LeastConstrainingValue => MapLCS}
+import csp.{Backtracking, ForwardChecking, SelectVariable}
 import map.Node.Node
+import map.{LeastConstrainingValue => MapLCS}
 
 object Main extends App {
   println("Started")

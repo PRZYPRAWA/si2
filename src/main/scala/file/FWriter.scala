@@ -6,7 +6,6 @@ import map.Node.Node
 import java.io.{BufferedWriter, File, FileWriter}
 import scala.util.Random
 
-
 class FWriter {
   def writeFile(filename: String, lines: Seq[String]): Unit = Control.using(
     new BufferedWriter(new FileWriter(new File(filename)))
