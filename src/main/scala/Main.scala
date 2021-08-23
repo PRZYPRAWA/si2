@@ -14,23 +14,6 @@ object Main extends App {
   println(s"Found ${einsteinSolution1.size} solutions")
   println(einsteinSolution1.headOption)
 
-  val einsteinSolution2 = ForwardChecking.solver(
-    Einstein.EinsteinChangeDomain.change,
-    SelectVariable.default[HouseProp, Property[String]],
-    SelectValue.default).solve(einstein)
-  println(s"Found ${einsteinSolution2.size} solutions")
-  println(einsteinSolution2.headOption)
-
-  val arcProblem: Csp[HouseProp, Property[String]] = Csp(EinsteinProblem.variables, v => EinsteinProblem.arcs(v))
-  val arcResult = ArcConsistency.makeArcConsistent(arcProblem)
-  //  arcResult.variables.map(v => (v.number, v.domain.map(_.value).mkString("[", ", ", "]"))).foreach(println)
-
-  val result = Backtracking.solver(SelectVariable.default[HouseProp, Property[String]],
-    EinsteinLCS.dsl).solve(arcResult.copy(constraints = v => EinsteinProblem.constraints(v)))
-
-  println(s"Found ${result.size} solutions")
-  println(result.headOption)
-
   println("-" * 50)
 
   val generatedMap = map.Map.generateMap(10, 5, 1000, 1000)
@@ -47,6 +30,4 @@ object Main extends App {
     MapLCS.dsl).solve(problem)
   println(s"Found ${mapSolutions2.size} solutions")
   mapSolutions2.headOption.foreach(println)
-
-  SaveToFile.saveMapResults(generatedMap, mapSolutions1)
 }
