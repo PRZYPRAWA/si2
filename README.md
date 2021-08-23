@@ -1,5 +1,6 @@
 # AI
 ## App solving Einstein's Puzzle and Coloring Map Problem
+### Implemented for Artificial Intelligence - University Course
 
 Implemented solving algorithms:
 - Backtracking
